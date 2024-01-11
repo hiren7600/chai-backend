@@ -1,12 +1,16 @@
 {
   "name": "chai-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "A backend at chai aur code channel - Youtube",
+  "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "test1"
+    "dev": "nodemon src/index.js"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
 }
