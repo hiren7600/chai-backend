@@ -36,7 +36,6 @@ const registerUser = asyncHandler( async (req, res) => {
 
 
     const {fullName, email, username, password } = req.body
-    //console.log("email: ", email);
 
     if (
         [fullName, email, username, password].some((field) => field?.trim() === "")
@@ -71,7 +70,6 @@ const registerUser = asyncHandler( async (req, res) => {
     if (!avatar) {
         throw new ApiError(400, "Avatar file is required")
     }
-    console.log("avatar.url",avatar.url);
     
     const user = await User.create({
         fullName,
@@ -81,7 +79,6 @@ const registerUser = asyncHandler( async (req, res) => {
         password,
         username: username.toLowerCase()
     })
-   console.log("user._id",user._id);
     const createdUser = await User.findById(user._id).select(
         "-password -refreshToken"
     )
@@ -138,8 +135,6 @@ const loginUser = asyncHandler(async (req, res) =>{
         httpOnly: true,
         secure: true
     }
-    console.log("accessToken",accessToken);
-    console.log("refreshToken",refreshToken);
     return res
     .status(200)
     .cookie("accessToken", accessToken, options)
@@ -246,7 +241,6 @@ const changeCurrentPassword = asyncHandler(async(req, res) => {
     .json(new ApiResponse(200, {}, "Password changed successfully"))
 })
 
-
 const getCurrentUser = asyncHandler(async(req, res) => {
     return res
     .status(200)
@@ -263,7 +257,7 @@ const updateAccountDetails = asyncHandler(async(req,res)=>{
     if (!fullName || !email) {
         throw ApiError(400,"All fields are required")
     }
-   const user = User.findByIdAndUpdate(
+    const user = await User.findByIdAndUpdate(
         req.user?._id,
         {
             $set:{
@@ -272,8 +266,7 @@ const updateAccountDetails = asyncHandler(async(req,res)=>{
             }
         },
         {new:true}
-    ).select("-password")
-
+        ).select("-password")
     return res
     .status(200)
     .json(new ApiResponse(200,user,"Account details updated siccessfully"))
@@ -342,7 +335,7 @@ const getUserChannelProfile = asyncHandler(async(req,res)=>{
     const channel = await User.aggregate([
         {
             $match:{
-                username:username?.toLowerCase();
+                username:username?.toLowerCase()
             }
         },
         {
@@ -454,5 +447,6 @@ export {
     updateAccountDetails,
     updateUserAvatar,
     updateUserCoverImage,
+    getUserChannelProfile,
     getWatchHistory
 }
